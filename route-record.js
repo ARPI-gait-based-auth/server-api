@@ -1,9 +1,7 @@
+const conf = require('./config');
+
 module.exports = function(app) {
-    app.post('/record/:name/:key', function (req, res) {
-        if (req.query.token !== process.env['TOKEN']) {
-            res.send(401);
-            return;
-        }
+    app.post('/' + conf.token + '/record/:name/:key', function (req, res) {
         res.send('hello world')
     })
 };

@@ -7,5 +7,6 @@ ADD ./ /app
 RUN yarn install
 
 EXPOSE 3900
+EXPOSE 80
 
 CMD ["node", "app.js"]

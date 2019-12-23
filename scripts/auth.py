@@ -1,5 +1,10 @@
 import sys
 
-print "Doe's CSV " + sys.argv[2][0:10] + "... belong to " + sys.argv[1] + "? (can we auth based on CSV?)"
+userName = sys.argv[1]
+recordCsv = sys.argv[2]
+
+print "Doe's CSV " + recordCsv[0:10] + "... belong to " + userName + "? (can we auth based on CSV?)"
+
+print "unknown 87%"
 
 sys.stdout.flush()

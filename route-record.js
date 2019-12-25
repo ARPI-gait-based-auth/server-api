@@ -32,9 +32,13 @@ module.exports = function (app) {
         let name = req.params.name.replace(/[^a-z0-9]/gi, '');
         let key = req.params.key.replace(/[^a-z0-9]/gi, '');
 
-        fs.writeFile(`./data/${name}/${key}.csv`, body.csv, function (e) {
+        if (!fs.existsSync(`./data/${name}`)){
+            fs.mkdirSync(`./data/${name}`);
+        }
+
+        fs.writeFile(`./data/${name}/${key}.csv`, `${req.body.csv}`, function (e) {
             if (e) {
-                return res.send(e.measure);
+                return res.send(e.message);
             }
 
             runPy('on-save', [name, key])
@@ -53,7 +57,7 @@ module.exports = function (app) {
 
     app.post('/' + conf.token + '/detect/:name', function (req, res) {
         let name = req.params.name.replace(/[^a-z0-9]/gi, '');
-        runPy('auth', [name, body.csv])
+        runPy('auth', [name, req.body.csv])
             .then(function (scriptResponse) {
                 res.send({
                     scriptResponse,

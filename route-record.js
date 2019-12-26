@@ -32,6 +32,8 @@ module.exports = function (app) {
         let name = req.params.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
         let key = req.params.key.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 
+        console.log({msg: 'record', name, key});
+
         if (!fs.existsSync(`./data/${name}`)) {
             fs.mkdirSync(`./data/${name}`);
         }
@@ -59,6 +61,7 @@ module.exports = function (app) {
 
     app.post('/' + conf.token + '/detect/:name', function (req, res) {
         let name = req.params.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        console.log({msg: 'detect', name});
         runPy('auth', [name, req.body.csv])
             .then(function (scriptResponse) {
                 const lastLineShouldBeJson = scriptResponse.split('\n').pop();

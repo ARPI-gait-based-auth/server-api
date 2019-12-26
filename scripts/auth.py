@@ -1,10 +1,22 @@
 import sys
+import os
+import math
+import numpy as np
+import pandas as pd
+from matplotlib import pyplot as plt
+from scipy import signal
+from fastdtw import fastdtw
 
 userName = sys.argv[1]
-recordCsv = sys.argv[2]
+recordKey = sys.argv[2]
+recordPath = "../data/" + userName + "/detect/" + recordKey + ".raw.csv"
+print (
+            "Unknown raw CSV record is located at " + recordPath + ", return authentication trust score that it really belongs to " + userName)
+###################################################################
 
-print "Doe's CSV " + recordCsv[0:10] + "... belong to " + userName + "? (can we auth based on CSV?)"
+# code here
 
-print "unknown 87%"
-
+###################################################################
+# Lat print should be in JSON format
+print ("{\"authTrust\": 78.8}")
 sys.stdout.flush()

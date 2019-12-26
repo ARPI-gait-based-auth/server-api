@@ -1,5 +1,7 @@
 FROM node:10-buster
 
+ENV PYTHONUNBUFFERED 1
+
 RUN apt-get update
 RUN apt-get install -y python3-pip
 
@@ -16,5 +18,7 @@ ADD ./ /app
 RUN yarn install
 
 EXPOSE 3900
+
+RUN node test.js
 
 CMD ["node", "app.js"]

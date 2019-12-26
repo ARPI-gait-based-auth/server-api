@@ -12,7 +12,7 @@ function runPy(scriptName, args) {
         });
 
         pyprog.stderr.on('data', (data) => {
-            nosuccess(data);
+            nosuccess(data.toString());
         });
     });
 }
@@ -43,6 +43,8 @@ module.exports = function (app) {
 
             runPy('on-save', [name, key])
                 .then(function (scriptResponse) {
+                    const lastLineShouldBeJson = scriptResponse.split('\n').pop();
+
                     res.send({
                         scriptResponse,
                         name,
@@ -59,6 +61,8 @@ module.exports = function (app) {
         let name = req.params.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
         runPy('auth', [name, req.body.csv])
             .then(function (scriptResponse) {
+                const lastLineShouldBeJson = scriptResponse.split('\n').pop();
+
                 const authTrust = 78.8; // TODO
 
                 res.send({

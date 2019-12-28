@@ -9,8 +9,8 @@ if (!fs.existsSync(`./data/detect`)) {
     fs.mkdirSync(`./data/detect`);
 }
 
-if (!fs.existsSync(`./data/last-features`)) {
-    fs.mkdirSync(`./data/last-features`);
+if (!fs.existsSync(`./data/features`)) {
+    fs.mkdirSync(`./data/features`);
 }
 
 function uuidv4() {
@@ -69,7 +69,7 @@ async function saveNewRecord(userName, key, csv) {
     const scriptResponse = await runPy('on-save', [userName, key]);
 
     const featuresCsv = await fs.readFile(`./data/records/${userName}/${key}.features.csv`);
-    await fs.writeFile(`./data/last-features/${userName}.csv`, `${featuresCsv}`);
+    await fs.writeFile(`./data/features/${userName}.csv`, `${featuresCsv}`);
 
     return {
         scriptResponse, userName, key

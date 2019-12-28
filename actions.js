@@ -1,5 +1,5 @@
 const conf = require('./config');
-const fs = require('fs');
+const fs = require('fs-extra');
 
 if (!fs.existsSync(`./data/records`)) {
     fs.mkdirSync(`./data/records`);
@@ -67,6 +67,10 @@ async function saveNewRecord(userName, key, csv) {
     }
 
     const scriptResponse = await runPy('on-save', [userName, key]);
+
+    const featuresCsv = await fs.readFile(`./data/records/${userName}/${key}.features.csv`);
+    await fs.writeFile(`./data/last-features/${userName}.csv`, `${featuresCsv}`);
+
     return {
         scriptResponse, userName, key
     };

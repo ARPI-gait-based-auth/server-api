@@ -8,7 +8,10 @@ from scipy import signal
 
 class CreateFeatureFile:
     def __init__(self, path):
-        data_path = os.getcwd() + path
+        if path[0] == "/":
+            data_path = path
+        else:
+            data_path = os.getcwd() + path
         print("Loading data from:", data_path)
         self.data = pd.read_csv(data_path, sep=";", header=0, index_col=0)
         print("Done. Loaded data frame (rows, columns):", self.data.shape, "")
@@ -49,7 +52,12 @@ class CreateFeatureFile:
         low_pass_magnitude_peaks = self.find_peaks_in_signal(low_pass_magnitude_signal)
         index = 0
 
-        csvFile = open(username + "-extracted_features.csv", "w")
+        if username[0] == "/":
+            writePath = username
+        else:
+            writePath=  username + "-extracted_features.csv"
+
+        csvFile = open(writePath, "w")
         csvFile.write(",avg_len_mag,avg_cycle_freq,area_under_cycle,avg_max_in_cycle, avg_min_in_cycle"
                       ",inner_cycle_min_max_diff,avg_max_acc_mag,avg_min_acc_mag,mag_variance,"
                       "mag_std,mag_mean,avg_max_acc_accX,avg_min_acc_accX,rms_accX,accX_variance,accX_std,accX_mean,"
@@ -229,9 +237,10 @@ class CreateFeatureFile:
         return mean_diff / num_of_cycles
 
 
-def main(file_name, username, cycle_size):
+def main(file_name, usernameOrOutPath, cycle_size):
+    print("Main parameters: " + str([file_name, usernameOrOutPath, cycle_size]))
     test = CreateFeatureFile(file_name)
-    test.create_feature_file_rows(username, cycle_size)
+    test.create_feature_file_rows(usernameOrOutPath, cycle_size)
 
 
 if __name__ == "__main__":

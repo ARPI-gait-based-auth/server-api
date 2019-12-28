@@ -1,22 +1,21 @@
-import sys
 import os
-import math
-import numpy as np
-import pandas as pd
-from matplotlib import pyplot as plt
-from scipy import signal
-from fastdtw import fastdtw
+import sys
+import CreateFeatureFile
+
+print(os.path.dirname(os.path.realpath(__file__)))
+
 
 userName = sys.argv[1]
 recordKey = sys.argv[2]
-recordPath = "../data/" + userName + "/detect/" + recordKey + ".raw.csv"
-print (
-            "Unknown raw CSV record is located at " + recordPath + ", return authentication trust score that it really belongs to " + userName)
+recordPath = os.path.dirname(os.path.realpath(__file__)) + "/../data/detect/" + userName + "-" + recordKey + ".raw.csv"
+featuresOutPath = os.path.dirname(os.path.realpath(__file__)) + "/../data/detect/" + userName + "-" + recordKey + ".features.csv"
+print ("Detection Record of raw CSV is located at " + recordPath)
+print ("Detection Output CSV with features will be " + featuresOutPath)
 ###################################################################
 
-# code here
+CreateFeatureFile.main(recordPath, featuresOutPath, 4)
 
 ###################################################################
-# Lat print should be in JSON format
+# Last print should be in JSON format
 print ("{\"authTrust\": 78.8}")
 sys.stdout.flush()

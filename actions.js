@@ -76,9 +76,19 @@ async function saveNewRecord(userName, key, csv) {
     };
 }
 
+async function retrain() {
+    const scriptResponse = await runPy('retrain', []);
+    return {
+        scriptResponse
+    };
+}
+
 
 async function confirmRecordOwner(userName, csv, key) {
     userName = userName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    if (key) {
+        key = key.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    }
     key = key || uuidv4();
     console.log(`Confirm record ${userName} ${key}`);
 
@@ -91,5 +101,5 @@ async function confirmRecordOwner(userName, csv, key) {
 }
 
 module.exports = {
-    saveNewRecord, confirmRecordOwner
+    saveNewRecord, confirmRecordOwner, retrain
 };

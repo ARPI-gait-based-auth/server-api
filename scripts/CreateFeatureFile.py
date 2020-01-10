@@ -13,7 +13,8 @@ class CreateFeatureFile:
         else:
             data_path = os.getcwd() + path
         print("Loading data from:", data_path)
-        self.data = pd.read_csv(data_path, sep=";", header=0, index_col=0)
+        self.data = pd.read_csv(data_path, sep=",", header=0, index_col=0)
+        # self.data.drop(self.data.tail(1).index,inplace=True)
         print("Done. Loaded data frame (rows, columns):", self.data.shape, "")
         print("")
 
@@ -27,7 +28,7 @@ class CreateFeatureFile:
 
     def magnitude(self, data):
         result = [0] * len(data["accX"])
-        for i in range(1, len(data["accX"]) + 1):
+        for i in range(1, len(data["accX"])):
             result[i - 1] = math.sqrt(data["accX"][i] * data["accX"][i] + data["accY"][i] * data["accY"][i] +
                                       data["accZ"][i] * data["accZ"][i])
         return result
@@ -45,7 +46,8 @@ class CreateFeatureFile:
         return signal.find_peaks(low_pass_magnitude, min_peak * 0.5, distance=25)[0]
 
     def get_low_pass_magnitude_filter(self, data):
-        return self.low_pass_filter(self.magnitude(data))
+        mag = self.magnitude(data)
+        return self.low_pass_filter(mag)
 
     def create_feature_file_rows(self, username, cycle_range):
         low_pass_magnitude_signal = self.get_low_pass_magnitude_filter(self.data)
@@ -55,7 +57,7 @@ class CreateFeatureFile:
         if username[0] == "/":
             writePath = username
         else:
-            writePath=  username + "-extracted_features.csv"
+            writePath =  username + "-extracted_features.csv"
 
         csvFile = open(writePath, "w")
         csvFile.write(",avg_len_mag,avg_cycle_freq,area_under_cycle,avg_max_in_cycle, avg_min_in_cycle"

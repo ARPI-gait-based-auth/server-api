@@ -97,9 +97,10 @@ async function confirmRecordOwner(userName, csv, key) {
     }
 
     const scriptResponse = await runPy('auth', [userName, key]);
-    const data = JSON.parse(scriptResponse.split("\n").filter(x => !!x && x.startsWith("{"))[0])
+    console.log("Got auth response", {userName, csv, key}, scriptResponse.split("\n"));
+    const data = JSON.parse(scriptResponse.split("\n").filter(x => !!x && x.startsWith("{"))[0]);
 
-    return authTrust;
+    return data.authTrust;
 }
 
 module.exports = {

@@ -54,8 +54,8 @@ function runPy(scriptName, args) {
 }
 
 async function saveNewRecord(userName, key, csv) {
-    userName = userName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-    key = key.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    userName = userName.replace(/[^a-z0-9\-]/gi, '_').toLowerCase();
+    key = key.replace(/[^a-z0-9\-]/gi, '_').toLowerCase();
     console.log(`Saving new record ${userName} ${key}`);
 
     if (!fs.existsSync(`./data/records/${userName}`)) {
@@ -85,9 +85,9 @@ async function retrain() {
 
 
 async function confirmRecordOwner(userName, csv, key) {
-    userName = userName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    userName = userName.replace(/[^a-z0-9\-]/gi, '_').toLowerCase();
     if (key) {
-        key = key.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        key = key.replace(/[^a-z0-9\-]/gi, '_').toLowerCase();
     }
     key = key || uuidv4();
     console.log(`Confirm record ${userName} ${key}`);
@@ -97,7 +97,9 @@ async function confirmRecordOwner(userName, csv, key) {
     }
 
     const scriptResponse = await runPy('auth', [userName, key]);
-    return scriptResponse;
+    const data = JSON.parse(scriptResponse.split("\n").filter(x => !!x && x.startsWith("{"))[0])
+
+    return authTrust;
 }
 
 module.exports = {

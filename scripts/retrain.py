@@ -17,13 +17,9 @@ for user in users:
         continue
 
     print("CREATING MODEL FOR: " + user)
-    score = Classifier.main(
-        os.path.dirname(os.path.realpath(__file__)) + "/server-data/features/", \
-        os.path.dirname(os.path.realpath(__file__)) + "/server-data/models/", \
-        user
-    )
+    score = Classifier.main(serverDataPathBase  + "features/", serverDataPathBase  + "models/", user)
 
-    stats += user + ": " + score + "\n"
+    stats += user + ": " + str(score) + "\n"
 
 ###################################################################
 # Last print should be in JSON format

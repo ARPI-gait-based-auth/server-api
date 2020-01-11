@@ -75,7 +75,7 @@ class Classifiers:
 
     def run_classifier(self, name):
         model = self.models[name]
-        kfold = StratifiedKFold(n_splits=10)
+        kfold = StratifiedKFold(n_splits=2)
         cv_results = cross_val_score(model, self.x_train, self.y_train, cv=kfold, scoring='accuracy')
         print('%s: %f (%f)' % (name, cv_results.mean(), cv_results.std()))
 

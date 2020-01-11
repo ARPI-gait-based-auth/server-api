@@ -15,10 +15,10 @@ print ("Detection Output CSV with features will be " + featuresOutPath)
 
 CreateFeatureFile.main(recordPath, featuresOutPath,  4)
 
-model_path = os.path.dirname(os.path.realpath(__file__)) + "/server-data/models/"+userName+".model"
+model_path = os.path.dirname(os.path.realpath(__file__)) + "/../data/models/"+userName+".model"
 authTrustScore = Classifier.predict(model_path, featuresOutPath)
 
 ###################################################################
 # Last print should be in JSON format
-print ("{\"authTrust\": " + authTrustScore + "}")
+print ("{\"authTrust\": " + str(authTrustScore) + "}")
 sys.stdout.flush()

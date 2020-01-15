@@ -14,7 +14,8 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC
-
+from sklearn.ensemble import RandomForestClassifier
+import numpy as np
 
 class Classifiers:
     def __init__(self, features_path):
@@ -37,6 +38,7 @@ class Classifiers:
         self.models['CART'] = DecisionTreeClassifier(max_depth=7)
         self.models['NB'] = GaussianNB()
         self.models['SVM'] = SVC(gamma='auto')
+        self.models['RF'] = RandomForestClassifier(n_jobs=4, n_estimators=100, random_state=42)
 
     def scan_folder_for_other_data(self, username):
         feature_data = []
@@ -75,21 +77,31 @@ class Classifiers:
 
     def run_classifier(self, name):
         model = self.models[name]
-        kfold = StratifiedKFold(n_splits=2)
-        cv_results = cross_val_score(model, self.x_train, self.y_train, cv=kfold, scoring='accuracy')
+        kfold = StratifiedKFold(n_splits=10)
+        cv_results = cross_val_score(model, self.x_train, self.y_train, cv=kfold)
+        # cv_results = cross_val_score(model, self.x_train, self.y_train, cv=kfold, scoring='accuracy')
         print('%s: %f (%f)' % (name, cv_results.mean(), cv_results.std()))
 
         model.fit(self.x_train, self.y_train)
         predictions = model.predict(self.x_test)
 
+        score = None
         # Evaluate predictions
-        score = accuracy_score(self.y_test, predictions)
-        print(score)
-        print()
-        print(confusion_matrix(self.y_test, predictions))
-        print()
-        print(classification_report(self.y_test, predictions))
-        print("_________________________________________________")
+        if name == "RF":
+            errors = abs(predictions - self.y_test)
+            error_score = round(np.mean(errors), 2)
+            mape = np.sum(np.logical_xor(errors, self.y_test))
+            # acc = 100 - np.mean(mape)
+            score = mape / len(errors) # round(acc, 2)
+            print(score)
+        else:
+            score = accuracy_score(self.y_test, predictions)
+            print(score)
+            print()
+            print(confusion_matrix(self.y_test, predictions))
+            print()
+            print(classification_report(self.y_test, predictions))
+            print("_________________________________________________")
 
         return (model, score)
 
@@ -106,15 +118,14 @@ def getScoreForAll(features_path, username):
     classifier.scan_folder_for_your_data(username)
     classifier.split_the_data()
 
-    best_model = (0, None, None)
-    for x in ["LR", "LDA", "KNN", "CART", "NB", "SVM"]:
+    scores = []
+    for x in ["LR", "LDA", "KNN", "CART", "NB", "SVM", "RF"]:
         y = classifier.run_classifier(x)
         model = y[0]
         score = y[1]
-        if best_model[0] <= score:
-            best_model = (score, x, model)
+        scores.append([x, score])
 
-    return best_model
+    return scores
 
 def main(features_path, models_path, username):
     classifier = Classifiers(features_path)
@@ -122,12 +133,14 @@ def main(features_path, models_path, username):
     classifier.scan_folder_for_your_data(username)
     classifier.split_the_data()
 
-    # model =  classifier.run_classifier("LR")
-    # model =  classifier.run_classifier("LDA")
-    # model =  classifier.run_classifier("KNN")
-    # model =  classifier.run_classifier("CART")
-    model =  classifier.run_classifier("NB")
+    # model = classifier.run_classifier("LR")
+    # model = classifier.run_classifier("LDA")
+    # model = classifier.run_classifier("KNN")
+    # model = classifier.run_classifier("CART")
+    # model = classifier.run_classifier("NB")
     # model = classifier.run_classifier("SVM")
+    model = classifier.run_classifier("SVM")
+    # model = classifier.run_classifier("RF")
 
     pickle.dump(model[0], open(models_path + username + ".model", 'wb'))
     return model[1]

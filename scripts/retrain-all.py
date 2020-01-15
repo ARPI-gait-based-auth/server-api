@@ -19,7 +19,7 @@ for user in users:
     print("CREATING MODEL FOR: " + user)
     score = Classifier.main(serverDataPathBase  + "features/", serverDataPathBase  + "models/", user)
 
-    stats += user + ": " + str(score) + "<br>\n"
+    stats += user + ": " + str(score) + "\n"
 
 ###################################################################
 # Last print should be in JSON format

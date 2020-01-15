@@ -42,8 +42,8 @@ class CreateFeatureFile:
         low_pass_magnitude = low_pass_magnitude - min
         low_pass_magnitude = low_pass_magnitude * low_pass_magnitude
 
-        min_peak = np.amax(low_pass_magnitude)
-        return signal.find_peaks(low_pass_magnitude, min_peak * 0.5, distance=25)[0]
+        min_peak = np.percentile(low_pass_magnitude, 89)
+        return signal.find_peaks(low_pass_magnitude, min_peak, distance=25)[0]
 
     def get_low_pass_magnitude_filter(self, data):
         mag = self.magnitude(data)
@@ -231,7 +231,7 @@ class CreateFeatureFile:
                     if min_peak > temp_data[peak]:
                         min_peak = temp_data[peak]
 
-                if max_peak != 0 and min_peak != 0:
+                if max_peak != 0 and min_peak != float('Inf'):
                     mean_diff += max_peak - min_peak
                 num_of_cycles += 1
         if num_of_cycles == 0:

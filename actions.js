@@ -2,6 +2,11 @@ const conf = require('./config');
 const fs = require('fs-extra');
 const crypto = require("crypto");
 
+const logs = [];
+function addLog(msg) {
+    logs.unshift(`<span style="color: gray">${new Date()}</span> ${msg}`)
+}
+
 if (!fs.existsSync(`./data/records`)) {
     fs.mkdirSync(`./data/records`);
 }
@@ -18,7 +23,7 @@ function uuidv4() {
     var S4 = function() {
         return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
     };
-    return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+    return (S4()+S4()+""+S4()+""+S4()+""+S4()+""+S4()+S4()+S4());
 }
 
 const {spawn} = require('child_process');
@@ -42,10 +47,18 @@ function runPy(scriptName, args) {
         });
 
         pyprog.stdout.on("end", function () {
-            if (resultError === "") {
+            console.log("PYTHON SCRIPT FINISHED");
+            console.log("RESULT: [[" + result + " ]]");
+            console.log("ERROR: [[" + resultError + " ]]");
+            console.log("---------");
+
+            const jsonRes = result
+                .split("\n")
+                .filter(x => !!x && x.startsWith("{"))[0];
+
+            if (jsonRes) {
                 success(result);
             } else {
-                console.log(result);
                 console.error(`Python error, you can reproduce the error with: \n${[`./scripts/${scriptName}.py`, ...args]}`);
                 const error = new Error(resultError);
                 console.error(error);
@@ -59,6 +72,8 @@ async function saveNewRecord(userName, key, csv) {
     userName = userName.replace(/[^a-z0-9\-]/gi, '_').toLowerCase();
     key = key.replace(/[^a-z0-9\-]/gi, '_').toLowerCase();
     console.log(`Saving new record ${userName} ${key}`);
+
+    addLog(`Saved train record for <strong>${userName}</strong> under key ${ key }.`);
 
     if (!fs.existsSync(`./data/records/${userName}`)) {
         fs.mkdirSync(`./data/records/${userName}`);
@@ -79,32 +94,40 @@ async function saveNewRecord(userName, key, csv) {
 }
 
 async function retrain() {
+    addLog(`Retrain of all users started.`);
     const scriptResponse = await runPy('retrain', []);
+    const jsonRes = scriptResponse
+        .split("\n")
+        .filter(x => !!x && x.startsWith("{"))[0];
+    addLog(`Retrain finished with statistics: ${ JSON.parse(jsonRes).stats }`);
     return {
         scriptResponse
     };
 }
 
 
-async function confirmRecordOwner(userName, csv, key) {
+async function confirmRecordOwner(userName, csv, key, forceModelUsername) {
     userName = userName.replace(/[^a-z0-9\-]/gi, '_').toLowerCase();
     if (key) {
         key = key.replace(/[^a-z0-9\-]/gi, '_').toLowerCase();
     }
     key = key || uuidv4();
     console.log(`Confirm record ${userName} ${key}`);
+    addLog(`Started authenticating <strong>${userName}</strong> under detect key ${ key }.`);
 
     if (csv) {
         await fs.writeFile(`./data/detect/${userName}-${key}.raw.csv`, `${csv}`);
     }
 
-    const scriptResponse = await runPy('auth', [userName, key]);
+    const scriptResponse = await runPy('auth', [userName, key, forceModelUsername || userName]);
     console.log("Got auth response", {userName, csv, key}, scriptResponse.split("\n"));
     const data = JSON.parse(scriptResponse.split("\n").filter(x => !!x && x.startsWith("{"))[0]);
+
+    addLog(`Record ${ key } from user ${ userName } belongs to <strong>${forceModelUsername || userName}</strong> with ${ data.authTrust}% probability.`);
 
     return data.authTrust;
 }
 
 module.exports = {
-    saveNewRecord, confirmRecordOwner, retrain
+    saveNewRecord, confirmRecordOwner, retrain, logs, addLog
 };

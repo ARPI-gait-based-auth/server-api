@@ -20,11 +20,11 @@ RUN yarn install
 
 EXPOSE 3900
 
-RUN tree --du -h ./data
-RUN node test.js
-RUN tree --du -h ./data
-RUN node test2.js
-RUN tree --du -h ./data
+# RUN tree --du -h ./data
+# RUN node test.js
+# RUN tree --du -h ./data
+# RUN node test2.js
+# RUN tree --du -h ./data
 
 
 CMD ["node", "app.js"]

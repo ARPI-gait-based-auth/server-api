@@ -11,9 +11,10 @@ module.exports = function (app) {
 <body><h1>Site options</h1>
 <hr>
 </ul>
-<li><a href="logs">Live logs</a></li>
-<li><a href="retrain">Retrain all users</a></li>
-<li><a href="detect">Manual user detect test</a></li>
+<li><a href="/logs">Live logs</a></li>
+<li><a href="./retrain">Retrain all users</a></li>
+<li><a href="./detect">Manual user detect test</a></li>
+<li><a href="./explore">Explore records</a></li>
 <hr>
 </body>
 </html>`)
@@ -54,7 +55,7 @@ ${actions.logs.join("<br>")}
     app.get('/' + conf.token + '/retrain', function (req, res) {
         actions.retrain()
             .then((data) => {
-                res.send(data)
+                res.send(data.stats)
             })
             .catch(e => {
                 res.send({
@@ -99,7 +100,7 @@ ${actions.logs.join("<br>")}
 <html>
 <body>
 <h1>Auth result</h1>
-Record ${ req.params.key } belongs to <strong>${req.params.name}</strong> with <strong>${ authTrust }%</strong> probability.
+Record ${ req.params.key } belongs to <strong>${req.params.name}</strong> with <strong>${ authTrust*100 }%</strong> probability.
 </body>
 </html>`)
             })
@@ -122,7 +123,7 @@ Record ${ req.params.key } belongs to <strong>${req.params.name}</strong> with <
 <body>
 
 <h1>Auth result</h1>
-Record ${ req.params.key } from user ${ req.params.name } belongs to <strong>${req.params.forceModelUsername}</strong> with <strong>${ authTrust }%</strong> probability.
+Record ${ req.params.key } from user ${ req.params.name } belongs to <strong>${req.params.forceModelUsername}</strong> with <strong>${ authTrust*100 }%</strong> probability.
 
 </body>
 </html>`)

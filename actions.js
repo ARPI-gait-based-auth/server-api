@@ -98,10 +98,12 @@ async function retrain() {
     const scriptResponse = await runPy('retrain', []);
     const jsonRes = scriptResponse
         .split("\n")
-        .filter(x => !!x && x.startsWith("{"))[0];
-    addLog(`Retrain finished with statistics: ${ JSON.parse(jsonRes).stats }`);
+        .filter(x => !!x && x.startsWith("{")).pop();
+    console.log("RETRAIN STAT:" + jsonRes);
+    const stats = JSON.parse(jsonRes).stats;
+    addLog(`Retrain finished with statistics: ${ stats }`);
     return {
-        scriptResponse
+        stats
     };
 }
 
@@ -123,7 +125,7 @@ async function confirmRecordOwner(userName, csv, key, forceModelUsername) {
     console.log("Got auth response", {userName, csv, key}, scriptResponse.split("\n"));
     const data = JSON.parse(scriptResponse.split("\n").filter(x => !!x && x.startsWith("{"))[0]);
 
-    addLog(`Record <strong>${ key }</strong> from user <strong>${ userName }</strong> belongs to <strong>${forceModelUsername || userName}</strong> with ${ data.authTrust}% probability.`);
+    addLog(`Record <strong>${ key }</strong> from user <strong>${ userName }</strong> belongs to <strong>${forceModelUsername || userName}</strong> with ${ data.authTrust*100}% probability.`);
 
     return data.authTrust;
 }

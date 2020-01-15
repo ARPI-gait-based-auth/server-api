@@ -112,8 +112,8 @@ async function confirmRecordOwner(userName, csv, key, forceModelUsername) {
         key = key.replace(/[^a-z0-9\-]/gi, '_').toLowerCase();
     }
     key = key || uuidv4();
-    console.log(`Confirm record ${userName} ${key}`);
-    addLog(`Started authenticating <strong>${userName}</strong> under detect key ${ key }.`);
+    console.log(`Confirm record ${userName} ${key} to belong to ${ forceModelUsername }`);
+    addLog(`Started authenticating <strong>${forceModelUsername || userName}</strong> from detect record <strong>${ userName} - ${key}</strong>.`);
 
     if (csv) {
         await fs.writeFile(`./data/detect/${userName}-${key}.raw.csv`, `${csv}`);
@@ -123,7 +123,7 @@ async function confirmRecordOwner(userName, csv, key, forceModelUsername) {
     console.log("Got auth response", {userName, csv, key}, scriptResponse.split("\n"));
     const data = JSON.parse(scriptResponse.split("\n").filter(x => !!x && x.startsWith("{"))[0]);
 
-    addLog(`Record ${ key } from user ${ userName } belongs to <strong>${forceModelUsername || userName}</strong> with ${ data.authTrust}% probability.`);
+    addLog(`Record <strong>${ key }</strong> from user <strong>${ userName }</strong> belongs to <strong>${forceModelUsername || userName}</strong> with ${ data.authTrust}% probability.`);
 
     return data.authTrust;
 }

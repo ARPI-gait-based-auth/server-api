@@ -28,7 +28,7 @@ ${  files.map(x => `<il><a href="detect/${ x.u }/${ x.k }">${ x.u } - ${ x.k }</
         res.send(`
 <html>
 <head>
-  <meta http-equiv="refresh" content="1">
+  <meta http-equiv="refresh" content="3">
 </head>
 <body>
 ${actions.logs.join("<br>")}

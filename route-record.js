@@ -4,6 +4,21 @@ const fs = require('fs-extra');
 
 module.exports = function (app) {
 
+    app.get('/' + conf.token + '', async function (req, res) {
+
+        res.send(`
+<html>
+<body><h1>Site options</h1>
+<hr>
+</ul>
+<li><a href="logs">Live logs</a></li>
+<li><a href="retrain">Retrain all users</a></li>
+<li><a href="detect">Manual user detect test</a></li>
+<hr>
+</body>
+</html>`)
+    });
+
     app.get('/' + conf.token + '/detect', async function (req, res) {
         let files = await fs.readdir('./data/detect');
         files = files.filter(x => x.endsWith('.raw.csv'))

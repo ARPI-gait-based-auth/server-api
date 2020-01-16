@@ -107,6 +107,13 @@ async function retrain() {
     };
 }
 
+async function regenFeatures() {
+    addLog(`regen features of all users started.`);
+    const scriptResponse = await runPy('features', []);
+    addLog(`regenFeatures finished with statistics:`);
+    return {scriptResponse};
+}
+
 
 async function confirmRecordOwner(userName, csv, key, forceModelUsername) {
     userName = userName.replace(/[^a-z0-9\-]/gi, '_').toLowerCase();
@@ -131,5 +138,5 @@ async function confirmRecordOwner(userName, csv, key, forceModelUsername) {
 }
 
 module.exports = {
-    saveNewRecord, confirmRecordOwner, retrain, logs, addLog
+    saveNewRecord, confirmRecordOwner, retrain, logs, addLog, regenFeatures
 };

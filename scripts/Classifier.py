@@ -15,6 +15,8 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
+#from matplotlib import pyplot as plt
+
 import numpy as np
 
 class Classifiers:
@@ -45,7 +47,8 @@ class Classifiers:
         # iterate over all the files in directory 'features'
         for file_name in os.listdir(self.data_path):
             if file_name.endswith(".csv") and not file_name.startswith(username):
-                feature_data.append(pd.read_csv(self.data_path + file_name, sep=",", header=0))
+                pd_read = pd.read_csv(self.data_path + file_name, sep=",", header=0)
+                feature_data.append(pd_read.sample(frac=0.65))
         self.other_data = pd.concat(feature_data).dropna().reset_index()
         self.other_data["isItYou"] = 0
 
@@ -73,6 +76,23 @@ class Classifiers:
         self.x_test = pd.concat([ox_test, yx_test], sort=False)
         self.y_train = pd.concat([oy_train, yy_train], sort=False)
         self.y_test = pd.concat([oy_test, yy_test], sort=False)
+
+        # create color dictionary
+        #colors = {'1': 'r', '0': 'b'}
+        ## create a figure and axis
+        #fig, ax = plt.subplots()
+        ## plot each data-point
+        #x_os = 'inner_cycle_min_max_diff'
+        #y_os = 'area_under_cycle'
+        #for i in range(len(self.other_data['avg_len_mag'])):
+        #    ax.scatter(self.other_data[x_os][i], self.other_data[y_os][i], color='b')
+        #for i in range(len(self.other_data['avg_len_mag']), len(self.other_data['avg_len_mag']) + len(self.your_data['avg_len_mag'])):
+        #    ax.scatter(self.your_data[x_os][i], self.your_data[y_os][i], color='r')
+        ## set a title and labels
+        #ax.set_title('Representation')
+        #ax.set_xlabel(x_os)
+        #ax.set_ylabel(y_os)
+        #plt.show()
 
 
     def run_classifier(self, name):
@@ -135,11 +155,11 @@ def main(features_path, models_path, username):
 
     # model = classifier.run_classifier("LR")
     # model = classifier.run_classifier("LDA")
-    # model = classifier.run_classifier("KNN")
+    model = classifier.run_classifier("KNN")
     # model = classifier.run_classifier("CART")
     # model = classifier.run_classifier("NB")
     # model = classifier.run_classifier("SVM")
-    model = classifier.run_classifier("SVM")
+    # model = classifier.run_classifier("SVM")
     # model = classifier.run_classifier("RF")
 
     pickle.dump(model[0], open(models_path + username + ".model", 'wb'))

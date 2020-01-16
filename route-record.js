@@ -13,6 +13,7 @@ module.exports = function (app) {
 </ul>
 <li><a href="/logs">Live logs</a></li>
 <li><a href="./retrain">Retrain all users</a></li>
+<li><a href="./features-gen">Features generate</a></li>
 <li><a href="./detect">Manual user detect test</a></li>
 <li><a href="./explore">Explore records</a></li>
 <hr>
@@ -50,6 +51,19 @@ ${  files.map(x => `<il><a href="detect/${ x.u }/${ x.k }">${ x.u } - ${ x.k }</
 ${actions.logs.join("<br>")}
 </body>
 </html>`)
+    });
+
+    app.get('/' + conf.token + '/features-gen', function (req, res) {
+        actions.regenFeatures()
+            .then((data) => {
+                res.send(data.stats)
+            })
+            .catch(e => {
+                res.send({
+                    status: "error",
+                    error: e.message
+                });
+            });
     });
 
     app.get('/' + conf.token + '/retrain', function (req, res) {

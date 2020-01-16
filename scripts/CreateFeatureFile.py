@@ -60,11 +60,11 @@ class CreateFeatureFile:
             writePath =  username + "-extracted_features.csv"
 
         csvFile = open(writePath, "w")
-        csvFile.write(",avg_len_mag,avg_cycle_freq,area_under_cycle,avg_max_in_cycle, avg_min_in_cycle"
+        csvFile.write("avg_len_mag,area_under_cycle,avg_max_in_cycle,avg_min_in_cycle"
                       ",inner_cycle_min_max_diff,avg_max_acc_mag,avg_min_acc_mag,mag_variance,"
-                      "mag_std,mag_mean,avg_max_acc_accX,avg_min_acc_accX,rms_accX,accX_variance,accX_std,accX_mean,"
-                      "avg_max_acc_accY,avg_min_acc_accY,rms_accY,accY_variance,accY_std,accY_mean,avg_max_acc_accZ,"
-                      "avg_min_acc_accZ,rms_accZ,accZ_variance,accZ_std,accZ_mean\n")
+                      "avg_max_acc_accX,avg_min_acc_accX,rms_accX,accX_variance,"
+                      "avg_max_acc_accY,avg_min_acc_accY,rms_accY,accY_variance,avg_max_acc_accZ,"
+                      "avg_min_acc_accZ,rms_accZ\n")
         for i in range(cycle_range, len(low_pass_magnitude_peaks)):
             temp_data = low_pass_magnitude_signal[
                         low_pass_magnitude_peaks[i - cycle_range]: low_pass_magnitude_peaks[i]]
@@ -77,9 +77,9 @@ class CreateFeatureFile:
             temp_data_accZ = self.data["accZ"][
                              low_pass_magnitude_peaks[i - cycle_range]: low_pass_magnitude_peaks[i]].values
 
-            csvFile.write(str(index) + ",")
+            #csvFile.write(str(index) + ",")
             csvFile.write(str(self.avg_length_calculate(low_pass_magnitude_peaks[i - cycle_range: i])) + ",")
-            csvFile.write(str(self.average_cycle_frequency(low_pass_magnitude_peaks[i - cycle_range: i])) + ",")
+            #csvFile.write(str(self.average_cycle_frequency(low_pass_magnitude_peaks[i - cycle_range: i])) + ",")
             csvFile.write(str(self.area_under_cycle(low_pass_magnitude_signal, low_pass_magnitude_peaks,
                                                     low_pass_magnitude_peaks[i - cycle_range],
                                                     low_pass_magnitude_peaks[i])) + ",")
@@ -96,29 +96,29 @@ class CreateFeatureFile:
             csvFile.write(str(self.avg_max_acceleration(temp_data)) + ",")
             csvFile.write(str(self.avg_min_acceleration(temp_data)) + ",")
             csvFile.write(str(self.calculate_variance(temp_data)) + ",")
-            csvFile.write(str(self.calculate_std(temp_data)) + ",")
-            csvFile.write(str(self.calculate_mean(temp_data)) + ",")
+            #csvFile.write(str(self.calculate_std(temp_data)) + ",")
+            #csvFile.write(str(self.calculate_mean(temp_data)) + ",")
 
             csvFile.write(str(self.avg_max_acceleration(temp_data_accX)) + ",")
             csvFile.write(str(self.avg_min_acceleration(temp_data_accX)) + ",")
             csvFile.write(str(self.root_mean_square(temp_data_accX)) + ",")
             csvFile.write(str(self.calculate_variance(temp_data_accX)) + ",")
-            csvFile.write(str(self.calculate_std(temp_data_accX)) + ",")
-            csvFile.write(str(self.calculate_mean(temp_data_accX)) + ",")
+            #csvFile.write(str(self.calculate_std(temp_data_accX)) + ",")
+            #csvFile.write(str(self.calculate_mean(temp_data_accX)) + ",")
 
             csvFile.write(str(self.avg_max_acceleration(temp_data_accY)) + ",")
             csvFile.write(str(self.avg_min_acceleration(temp_data_accY)) + ",")
             csvFile.write(str(self.root_mean_square(temp_data_accY)) + ",")
             csvFile.write(str(self.calculate_variance(temp_data_accY)) + ",")
-            csvFile.write(str(self.calculate_std(temp_data_accY)) + ",")
-            csvFile.write(str(self.calculate_mean(temp_data_accY)) + ",")
+            #csvFile.write(str(self.calculate_std(temp_data_accY)) + ",")
+            #csvFile.write(str(self.calculate_mean(temp_data_accY)) + ",")
 
             csvFile.write(str(self.avg_max_acceleration(temp_data_accZ)) + ",")
             csvFile.write(str(self.avg_min_acceleration(temp_data_accZ)) + ",")
-            csvFile.write(str(self.root_mean_square(temp_data_accZ)) + ",")
-            csvFile.write(str(self.calculate_variance(temp_data_accZ)) + ",")
-            csvFile.write(str(self.calculate_std(temp_data_accZ)) + ",")
-            csvFile.write(str(self.calculate_mean(temp_data_accZ)))
+            csvFile.write(str(self.root_mean_square(temp_data_accZ)) + "")
+            #csvFile.write(str(self.calculate_variance(temp_data_accZ)) + ",")
+            #csvFile.write(str(self.calculate_std(temp_data_accZ)) + ",")
+            #csvFile.write(str(self.calculate_mean(temp_data_accZ)))
 
             csvFile.write("\n")
 

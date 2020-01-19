@@ -7,6 +7,7 @@ import Classifier
 
 print(os.path.dirname(os.path.realpath(__file__)))
 
+windowSize = int(sys.argv[1] or "4")
 serverDataRecordsPath = os.path.dirname(os.path.realpath(__file__)) + "/../data/records"
 
 
@@ -35,7 +36,7 @@ for user in users:
         recordBasePath = join(userBasePath, recordName)
         recordPath = join(userBasePath, recordName + ".raw.csv")
         featuresPath = join(userBasePath, recordName + ".features.csv")
-        CreateFeatureFile.main(recordPath, featuresPath, 4)
+        CreateFeatureFile.main(recordPath, featuresPath, windowSize)
         # # Old way
         # copyfile(featuresPath, serverDataPathBase + "features/" + user + ".csv")
         with open(featuresPath) as f:

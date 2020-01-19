@@ -2,6 +2,7 @@ const conf = require('./config');
 const fs = require('fs-extra');
 const crypto = require("crypto");
 
+const windowSizeOpt = {val:4};
 const logs = [];
 function addLog(msg) {
     logs.unshift(`<span style="color: gray">${new Date()}</span> ${msg}`)
@@ -83,7 +84,7 @@ async function saveNewRecord(userName, key, csv) {
         await fs.writeFile(`./data/records/${userName}/${key}.raw.csv`, `${csv}`);
     }
 
-    const scriptResponse = await runPy('on-save', [userName, key]);
+    const scriptResponse = await runPy('on-save', [userName, key, windowSizeOpt.val]);
 
     const featuresCsv = await fs.readFile(`./data/records/${userName}/${key}.features.csv`);
     await fs.writeFile(`./data/features/${userName}.csv`, `${featuresCsv}`);
@@ -109,7 +110,7 @@ async function retrain() {
 
 async function regenFeatures() {
     addLog(`regen features of all users started.`);
-    const scriptResponse = await runPy('features', []);
+    const scriptResponse = await runPy('features', [windowSizeOpt.val]);
     addLog(`regenFeatures finished with statistics:`);
     return {scriptResponse};
 }
@@ -128,7 +129,7 @@ async function confirmRecordOwner(userName, csv, key, forceModelUsername) {
         await fs.writeFile(`./data/detect/${userName}-${key}.raw.csv`, `${csv}`);
     }
 
-    const scriptResponse = await runPy('auth', [userName, key, forceModelUsername || userName]);
+    const scriptResponse = await runPy('auth', [userName, key, forceModelUsername || userName, windowSizeOpt.val]);
     console.log("Got auth response", {userName, csv, key}, scriptResponse.split("\n"));
     const data = JSON.parse(scriptResponse.split("\n").filter(x => !!x && x.startsWith("{"))[0]);
 
@@ -138,5 +139,5 @@ async function confirmRecordOwner(userName, csv, key, forceModelUsername) {
 }
 
 module.exports = {
-    saveNewRecord, confirmRecordOwner, retrain, logs, addLog, regenFeatures
+    saveNewRecord, confirmRecordOwner, retrain, logs, addLog, regenFeatures, windowSizeOpt
 };

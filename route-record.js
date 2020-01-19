@@ -16,9 +16,15 @@ module.exports = function (app) {
 <li><a href="./features-gen">Features generate</a></li>
 <li><a href="./detect">Manual user detect test</a></li>
 <li><a href="./explore">Explore records</a></li>
+<li><a href="./set-size/4">Set window size 4</a></li>
 <hr>
 </body>
 </html>`)
+    });
+
+    app.get('/' + conf.token + '/set-size/:size', function (req, res) {
+        actions.windowSizeOpt.val = + req.params.size || 4;
+        res.send(actions.windowSizeOpt)
     });
 
     app.get('/' + conf.token + '/detect', async function (req, res) {

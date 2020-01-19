@@ -10,6 +10,7 @@ print(os.path.dirname(os.path.realpath(__file__)))
 
 userName = sys.argv[1]
 recordKey = sys.argv[2]
+windowSize = int(sys.argv[3] or "4")
 
 recordPath = os.path.dirname(os.path.realpath(__file__)) + "/../data/records/" + userName + "/" + recordKey + ".raw.csv"
 featuresOutPath = os.path.dirname(os.path.realpath(__file__)) + "/../data/records/" + userName + "/" + recordKey + ".features.csv"
@@ -39,7 +40,7 @@ for user in users:
         recordBasePath = join(userBasePath, recordName)
         recordPath = join(userBasePath, recordName + ".raw.csv")
         featuresPath = join(userBasePath, recordName + ".features.csv")
-        CreateFeatureFile.main(recordPath, featuresPath, 4)
+        CreateFeatureFile.main(recordPath, featuresPath, windowSize)
         # # Old way
         # copyfile(featuresPath, serverDataPathBase + "features/" + user + ".csv")
         with open(featuresPath) as f:
